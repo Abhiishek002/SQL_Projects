@@ -1,89 +1,91 @@
--- Retrieve all columns for transactions where the transaction amount is greater than 2000?
-select * from dbo.fraud_dataset where transaction_amount > 2000;
+-- Retrieve all columns for transactions where the transaction amount is greater than 2000
+SELECT * FROM fraud_dataset WHERE transaction_amount > 2000;
 
--- Calculate the average transaction amount for each merchant?
-select merchant, avg(transaction_amount) as "Average Transaction Amount" 
-from dbo.fraud_dataset 
-group by merchant;
+-- Calculate the average transaction amount for each merchant
+SELECT merchant, AVG(transaction_amount) AS `Average Transaction Amount` 
+FROM fraud_dataset 
+GROUP BY merchant;
 
--- Count the number of transactions for each location?
-select location, count(*) as "Transaction Count" 
-from dbo.fraud_dataset
-group by location;
+-- Count the number of transactions for each location
+SELECT location, COUNT(*) AS `Transaction Count` 
+FROM fraud_dataset
+GROUP BY location;
 
--- Find the total transaction amount for each gender?
-select gender, sum(transaction_amount) as "Total Transaction Amount" 
-from dbo.fraud_dataset
-group by gender;
+-- Find the total transaction amount for each gender
+SELECT gender, SUM(transaction_amount) AS `Total Transaction Amount` 
+FROM fraud_dataset
+GROUP BY gender;
 
--- Calculate the percentage of fraudulent transactions for each merchant?
-select merchant, 
-sum(case when fraud_label = 1 then 1 else 0 end) / count(*) * 100 as "Fraud Percentage"
-from dbo.fraud_dataset
-group by merchant;
+-- Calculate the percentage of fraudulent transactions for each merchant
+SELECT merchant, 
+SUM(CASE WHEN fraud_label = 1 THEN 1 ELSE 0 END) / COUNT(*) * 100 AS `Fraud Percentage`
+FROM fraud_dataset
+GROUP BY merchant;
 
--- Retrieve the transactions where the transaction amount is in the range of 1000 to 2000 (inclusive)?
-select * from dbo.fraud_dataset where transaction_amount between 1000 and 2000;
+-- Retrieve the transactions where the transaction amount is in the range of 1000 to 2000 (inclusive)
+SELECT * FROM fraud_dataset WHERE transaction_amount BETWEEN 1000 AND 2000;
 
--- Find the average age of customers for each merchant in New York?
-select merchant, avg(age) as "Average Age" from dbo.fraud_dataset
-where location = 'New York'
-group by merchant;
+-- Find the average age of customers for each merchant in New York
+SELECT merchant, AVG(age) AS `Average Age` 
+FROM fraud_dataset
+WHERE location = 'New York'
+GROUP BY merchant;
 
--- Count the number of transactions for each age group?
-select 
-case 
-when age between 20 and 30 then '20-30'
-when age between 31 and 40 then '31-40'
-when age between 41 and 50 then '41-50'
-else '51+'
-end as "Age Group",
-count(*) as "Transaction Count"
-from dbo.fraud_dataset
-group by 
-case 
-when age between 20 and 30 then '20-30'
-when age between 31 and 40 then '31-40'
-when age between 41 and 50 then '41-50'
-else '51+'
-end;
+-- Count the number of transactions for each age group
+SELECT 
+CASE 
+    WHEN age BETWEEN 20 AND 30 THEN '20-30'
+    WHEN age BETWEEN 31 AND 40 THEN '31-40'
+    WHEN age BETWEEN 41 AND 50 THEN '41-50'
+    ELSE '51+'
+END AS `Age Group`,
+COUNT(*) AS `Transaction Count`
+FROM fraud_dataset
+GROUP BY 
+CASE 
+    WHEN age BETWEEN 20 AND 30 THEN '20-30'
+    WHEN age BETWEEN 31 AND 40 THEN '31-40'
+    WHEN age BETWEEN 41 AND 50 THEN '41-50'
+    ELSE '51+'
+END;
 
--- Find the total transaction amount and the number of transactions for each location?
-select location, sum(transaction_amount) as "Total Transaction Amount", 
-count(*) as transaction_count
-from dbo.fraud_dataset 
-group by location;
+-- Find the total transaction amount and the number of transactions for each location
+SELECT location, SUM(transaction_amount) AS `Total Transaction Amount`, 
+COUNT(*) AS transaction_count
+FROM fraud_dataset 
+GROUP BY location;
 
--- Calculate the average age of customers for each gender and location?
-select gender, location, avg(age) as "Average Age"
-from dbo.fraud_dataset
-group by gender, location;
+-- Calculate the average age of customers for each gender and location
+SELECT gender, location, AVG(age) AS `Average Age`
+FROM fraud_dataset
+GROUP BY gender, location;
 
--- Determine the highest transaction amount for each merchant?
-select merchant, max(transaction_amount) as "Highest Transaction Amount"
-from dbo.fraud_dataset
-group by merchant;
+-- Determine the highest transaction amount for each merchant
+SELECT merchant, MAX(transaction_amount) AS `Highest Transaction Amount`
+FROM fraud_dataset
+GROUP BY merchant;
 
--- Identify the location with the highest total transaction amount?
-select top 1 location
-from (select location, sum(transaction_amount) as total_transaction_amount
-from dbo.fraud_dataset
-group by location) as location_totals
-order by total_transaction_amount desc;
+-- Identify the location with the highest total transaction amount
+SELECT location
+FROM (SELECT location, SUM(transaction_amount) AS total_transaction_amount
+      FROM fraud_dataset
+      GROUP BY location) AS location_totals
+ORDER BY total_transaction_amount DESC
+LIMIT 1;
 
--- Calculate the total number of fraudulent transactions and the percentage of fraud for each location?
-select location,
-sum(case when fraud_label = 1 then 1 else 0 end) as "Total Fraudulent Transactions",
-(sum(case when fraud_label = 1 then 1 else 0 end) / count(*)) * 100 as "Fraud Percentage"
-from dbo.fraud_dataset
-group by location;
+-- Calculate the total number of fraudulent transactions and the percentage of fraud for each location
+SELECT location,
+SUM(CASE WHEN fraud_label = 1 THEN 1 ELSE 0 END) AS `Total Fraudulent Transactions`,
+(SUM(CASE WHEN fraud_label = 1 THEN 1 ELSE 0 END) / COUNT(*)) * 100 AS `Fraud Percentage`
+FROM fraud_dataset
+GROUP BY location;
 
 -- Retrieve the transactions with a transaction amount greater than the average transaction amount
-select * from dbo.fraud_dataset where transaction_amount > (select avg(transaction_amount) from dbo.fraud_dataset);
+SELECT * FROM fraud_dataset WHERE transaction_amount > (SELECT AVG(transaction_amount) FROM fraud_dataset);
 
--- Calculate the average age of customers for transactions with fraud (fraud_label = 1) and without fraud (fraud_label = 0)?
-select case when fraud_label = 1 then 'Fraudulent' else 'Non-Fraudulent' end as transaction_type,
-avg(age) as average_age
-from dbo.fraud_dataset
-group by 
-case when fraud_label = 1 then 'Fraudulent' else 'Non-Fraudulent' end;
+-- Calculate the average age of customers for transactions with fraud (fraud_label = 1) and without fraud (fraud_label = 0)
+SELECT CASE WHEN fraud_label = 1 THEN 'Fraudulent' ELSE 'Non-Fraudulent' END AS transaction_type,
+AVG(age) AS average_age
+FROM fraud_dataset
+GROUP BY 
+CASE WHEN fraud_label = 1 THEN 'Fraudulent' ELSE 'Non-Fraudulent' END;
